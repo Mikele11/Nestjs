@@ -1,0 +1,35 @@
+version: '3.3'
+
+services:
+  main:
+    container_name: main
+    build: .
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 5000:5000
+      - 9229:9229
+    command: npm run start
+    networks:
+      - webnet
+    depends_on:
+      - postgres
+  postgres:
+    container_name: postgres
+    image: postgres:12
+    networks:
+      - webnet
+    environment:
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_USER: "admin"
+      POSTGRES_DB: "node_hero"
+      PG_DATA: /var/lib/postgresql/data
+    ports:
+      - 5032:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+networks:
+  webnet:
+volumes:
+  pgdata:
